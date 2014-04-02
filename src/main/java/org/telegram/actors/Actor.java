@@ -1,4 +1,4 @@
-package org.telegram.actor;
+package org.telegram.actors;
 
 import java.util.ArrayList;
 

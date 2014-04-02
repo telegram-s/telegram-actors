@@ -1,4 +1,4 @@
-package org.telegram.actor;
+package org.telegram.actors;
 
 /**
  * Created by ex3ndr on 17.03.14.
