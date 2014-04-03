@@ -92,6 +92,14 @@ public class ActorSystem {
     public void onUnhandledMessage(Actor actor, String name, Object[] args, ActorReference reference) {
     }
 
+    public void close() {
+        for (ThreadHolder holder : holders) {
+            if (holder.actorThread != null) {
+                holder.actorThread.close();
+            }
+        }
+    }
+
     private class ThreadHolder {
         public String name;
         public int threadPriority;

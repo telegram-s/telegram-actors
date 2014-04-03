@@ -73,6 +73,10 @@ public abstract class MessageDispatcher<T> {
         thread.start();
     }
 
+    public void close() {
+        isClosed = true;
+    }
+
     public DispatchQueue<T> getQueue() {
         return queue;
     }

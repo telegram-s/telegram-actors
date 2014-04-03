@@ -8,7 +8,7 @@ import java.util.HashMap;
  */
 public abstract class ReflectedActor extends Actor {
 
-    private HashMap<String, Method> eventMethods = new HashMap<String, Method>();
+    private HashMap<String, Method> eventMethods;
     private Method[] methods;
 
     public ReflectedActor(ActorSystem system, String actorName, String threadName) {
@@ -18,6 +18,9 @@ public abstract class ReflectedActor extends Actor {
     private void loadMethods() {
         if (methods == null) {
             methods = getClass().getDeclaredMethods();
+        }
+        if (eventMethods == null) {
+            eventMethods = new HashMap<String, Method>();
         }
     }
 
