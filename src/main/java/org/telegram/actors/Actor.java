@@ -16,14 +16,14 @@ public abstract class Actor {
 
     public Actor(ActorSystem system, String actorName, String threadName) {
         this.name = actorName;
-        ActorThreadRaw thread = system.findThread(threadName);
-        if (thread == null) {
-            throw new RuntimeException("Unable to find thread '" + threadName + "'");
-        }
-        reference = new ActorReference(this, thread);
-        actorSystem = system;
+        this.actorSystem = system;
+        this.reference = new ActorReference(this, system, threadName);
 
         registerMethods();
+    }
+
+    public String getName() {
+        return name;
     }
 
     protected void registerMethods() {

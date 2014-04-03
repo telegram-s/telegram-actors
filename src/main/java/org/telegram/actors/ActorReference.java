@@ -1,22 +1,26 @@
 package org.telegram.actors;
 
+import org.telegram.actors.queue.ActorMessage;
+
 /**
  * Created by ex3ndr on 17.03.14.
  */
 public class ActorReference {
-    private ActorThreadRaw thread;
+    private int threadId;
     private Actor actor;
+    private ActorSystem system;
 
-    public ActorReference(Actor actor, ActorThreadRaw thread) {
+    public ActorReference(Actor actor, ActorSystem system, String name) {
         this.actor = actor;
-        this.thread = thread;
+        this.system = system;
+        this.threadId = system.getThreadId(name);
     }
 
     public void talk(String message, ActorReference sender, Object... args) {
-        thread.deliverMessage(actor, message, args, sender);
+        system.sendMessage(threadId, ActorMessage.obtain(actor, message, args, sender));
     }
 
     public void talkDelayed(String message, ActorReference sender, long delay, Object... args) {
-        thread.deliverMessageDelayed(actor, message, args, sender, delay);
+        system.sendMessage(threadId, ActorMessage.obtain(actor, message, args, sender), delay);
     }
 }
