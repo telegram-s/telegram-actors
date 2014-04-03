@@ -80,7 +80,12 @@ public class ActorSystem {
             return;
         }
         // Logger.d(TAG, "Sending message " + message.getMessage() + " to " + message.getActor().getName());
-        holders[threadId].queue.putToQueue(message, ActorTime.currentTime() + delay);
+        ActorMessageDesc desc = message.getActor().findDesc(message.getMessage());
+        if (desc.isSingleShot()) {
+            holders[threadId].queue.postToQueueUniq(message, ActorTime.currentTime() + delay);
+        } else {
+            holders[threadId].queue.putToQueue(message, ActorTime.currentTime() + delay);
+        }
         checkThread(threadId);
     }
 

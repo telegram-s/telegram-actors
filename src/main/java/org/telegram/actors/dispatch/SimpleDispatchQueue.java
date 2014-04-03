@@ -7,8 +7,8 @@ import java.util.ArrayList;
  */
 public class SimpleDispatchQueue<T> extends DispatchQueue<T> {
 
-    private final ArrayList<Message> pendingMessages = new ArrayList<Message>();
-    private final ArrayList<Message> freeMessages = new ArrayList<Message>();
+    protected final ArrayList<Message> pendingMessages = new ArrayList<Message>();
+    protected final ArrayList<Message> freeMessages = new ArrayList<Message>();
 
     @Override
     public T dispatch(long time) {
@@ -60,7 +60,7 @@ public class SimpleDispatchQueue<T> extends DispatchQueue<T> {
         }
     }
 
-    private class Message {
+    protected class Message {
         public long destTime;
         public T action;
 

@@ -56,7 +56,7 @@ public abstract class MessageDispatcher<T> {
                         // Possibly danger situation, but i hope this will not corrupt JVM
                         // For example: on Android we could always continue execution after OutOfMemoryError
                         // Anyway, better to catch all errors manually in dispatchAction
-                        t.printStackTrace();
+                        // t.printStackTrace();
                     }
                 }
             }

@@ -36,7 +36,7 @@ public abstract class ReflectedActor extends Actor {
     }
 
     @Override
-    protected void receive(String name, Object[] args, ActorReference sender) throws Exception {
+    protected void process(String name, Object[] args, ActorReference sender) throws Exception {
         eventMethods.get(name).invoke(this, args);
     }
 }
