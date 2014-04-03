@@ -8,16 +8,22 @@ import java.util.HashMap;
  */
 public abstract class ReflectedActor extends Actor {
 
-    private HashMap<String, Method> eventMethods;
+    private HashMap<String, Method> eventMethods = new HashMap<String, Method>();
+    private Method[] methods;
 
     public ReflectedActor(ActorSystem system, String actorName, String threadName) {
         super(system, actorName, threadName);
     }
 
+    private void loadMethods() {
+        if (methods == null) {
+            methods = getClass().getDeclaredMethods();
+        }
+    }
+
     @Override
     protected void registerMethods() {
-        eventMethods = new HashMap<String, Method>();
-        Method[] methods = getClass().getDeclaredMethods();
+        loadMethods();
         for (Method m : methods) {
             String methodName = m.getName();
             if (methodName.startsWith("on") && methodName.endsWith("Message")) {
@@ -27,12 +33,26 @@ public abstract class ReflectedActor extends Actor {
                 registerKind(stateName, m.getParameterTypes());
                 eventMethods.put(stateName, m);
             }
-//            if (methodName.startsWith("on") && methodName.endsWith("Async")) {
-//                m.setAccessible(true);
-//                String stateName = methodName.substring(2, methodName.length() - 7);
-//                // Async methods
-//            }
         }
+    }
+
+    protected ActorMessageDesc registerMethod(String name) {
+        loadMethods();
+        for (Method m : methods) {
+            String methodName = m.getName();
+            if (methodName.startsWith("on") && methodName.endsWith("Message")) {
+                m.setAccessible(true);
+                String stateName = methodName.substring(2, methodName.length() - 7);
+                stateName = stateName.substring(0, 1).toLowerCase() + stateName.substring(1);
+                if (stateName.equals(name)) {
+                    eventMethods.put(stateName, m);
+                    return registerKind(stateName, m.getParameterTypes());
+                }
+
+
+            }
+        }
+        throw new UnsupportedOperationException("Unable to find method for '" + name + "'");
     }
 
     @Override
