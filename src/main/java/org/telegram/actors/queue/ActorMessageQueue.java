@@ -1,5 +1,6 @@
 package org.telegram.actors.queue;
 
+import org.telegram.actors.MessageComparator;
 import org.telegram.actors.dispatch.SimpleDispatchQueue;
 
 /**
@@ -14,7 +15,22 @@ public class ActorMessageQueue extends SimpleDispatchQueue<ActorMessage> {
                     pendingMessages.remove(msg);
                 }
             }
+
+            Message nmessage = obtainMessage();
+            nmessage.setMessage(message, atTime);
+            pendingMessages.add(nmessage);
         }
-        putToQueue(message, atTime);
+        notifyQueueChanged();
+    }
+
+    public void removeMessage(MessageComparator comparator) {
+        synchronized (pendingMessages) {
+            for (Object msg2 : pendingMessages.toArray()) {
+                Message msg = (Message) msg2;
+                if (comparator.checkMessage(msg.action.getMessage(), msg.action.getArgs())) {
+                    pendingMessages.remove(msg);
+                }
+            }
+        }
     }
 }

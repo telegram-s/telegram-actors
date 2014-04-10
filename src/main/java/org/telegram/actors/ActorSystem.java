@@ -89,13 +89,20 @@ public class ActorSystem {
         checkThread(threadId);
     }
 
+    public void removeMessage(final int threadId, MessageComparator messageFilter) {
+        if (threadId < 0 || threadId >= holdersCount) {
+            return;
+        }
+        holders[threadId].queue.removeMessage(messageFilter);
+    }
+
     public void onUnhandledMessage(Actor actor, String name, Object[] args, ActorReference reference) {
     }
 
     public void close() {
-        for (ThreadHolder holder : holders) {
-            if (holder.actorThread != null) {
-                holder.actorThread.close();
+        for (int i = 0; i < holdersCount; i++) {
+            if (holders[i].actorThread != null) {
+                holders[i].actorThread.close();
             }
         }
     }
