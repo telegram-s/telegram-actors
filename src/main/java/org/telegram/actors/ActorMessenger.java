@@ -12,11 +12,11 @@ public abstract class ActorMessenger {
         this.sender = sender;
     }
 
-    public void talkRaw(String message, Object... args) {
+    protected void talkRaw(String message, Object... args) {
         reference.talk(message, sender, args);
     }
 
-    public void talkRawDelayed(String message, long delay, Object... args) {
+    protected void talkRawDelayed(String message, long delay, Object... args) {
         reference.talkDelayed(message, sender, delay, args);
     }
 

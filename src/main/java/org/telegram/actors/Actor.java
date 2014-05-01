@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by ex3ndr on 17.03.14.
  */
 public abstract class Actor {
+    public static final String MESSAGE_PING = "#ping";
+    public static final String MESSAGE_KILL = "#kill";
 
     private ActorReference reference;
     protected ActorSystem actorSystem;
