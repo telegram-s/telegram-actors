@@ -14,11 +14,6 @@ public class ActionActor extends Actor {
         this.timeout = timeout;
     }
 
-    @Override
-    protected void process(String name, Object[] args, ActorReference sender) throws Exception {
-
-    }
-
     protected void onStarted() {
 
     }

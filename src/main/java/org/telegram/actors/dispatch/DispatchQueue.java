@@ -38,7 +38,7 @@ public abstract class DispatchQueue<T> {
      * Adding message to queue
      *
      * @param message message
-     * @param atTime  time (use {@link org.telegram.actors.ActorTime.currentTime()} for currentTime)
+     * @param atTime  time (use {@link org.telegram.actors.ActorTime#currentTime()} for currentTime)
      */
     public final void putToQueue(T message, long atTime) {
         putToQueueImpl(message, atTime);

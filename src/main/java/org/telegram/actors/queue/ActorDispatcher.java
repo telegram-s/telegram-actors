@@ -18,12 +18,7 @@ public class ActorDispatcher extends MessageDispatcher<ActorMessage> {
     @Override
     protected void dispatchAction(ActorMessage message) {
         Logger.d(TAG, "Dispatching action: " + message.getMessage() + " for " + message.getActor().getName());
-        try {
-            message.getActor().receiveMessage(message.getMessage(), message.getArgs(), message.getSender());
-        } catch (Exception e) {
-            // e.printStackTrace();
-            message.getActor().onException(e);
-        }
+        message.getActor().handleMessage(message.getMessage(), message.getArgs(), message.getSender());
         ActorMessage.recycle(message);
     }
 }

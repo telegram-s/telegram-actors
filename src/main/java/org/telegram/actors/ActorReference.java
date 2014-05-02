@@ -23,4 +23,12 @@ public class ActorReference {
     public void talkDelayed(String message, ActorReference sender, long delay, Object... args) {
         system.sendMessage(threadId, ActorMessage.obtain(actor, message, args, sender), delay);
     }
+
+    public void ping(ActorReference sender) {
+        system.sendMessage(threadId, ActorMessage.obtain(actor, Actor.MESSAGE_PING, new Object[0], sender));
+    }
+
+    public void kill() {
+        system.sendMessage(threadId, ActorMessage.obtain(actor, Actor.MESSAGE_KILL, new Object[0], null));
+    }
 }

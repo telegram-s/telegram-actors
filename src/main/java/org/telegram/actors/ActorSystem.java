@@ -10,6 +10,8 @@ import org.telegram.actors.queue.ActorMessageQueue;
  */
 public class ActorSystem {
 
+    private static final int HOLDERS_SIZE = 16;
+
     private static final String TAG = "ActorSystem";
 
     // High performance singleton
@@ -25,13 +27,13 @@ public class ActorSystem {
     private int holdersCount;
 
     public ActorSystem() {
-        holders = new ThreadHolder[16];
+        holders = new ThreadHolder[HOLDERS_SIZE];
         holdersCount = 0;
     }
 
     private void checkHolders() {
         if (holdersCount == holders.length) {
-            ThreadHolder[] nHolders = new ThreadHolder[holders.length + 16];
+            ThreadHolder[] nHolders = new ThreadHolder[holders.length + HOLDERS_SIZE];
             for (int i = 0; i < holders.length; i++) {
                 nHolders[i] = holders[i];
             }
@@ -41,13 +43,11 @@ public class ActorSystem {
 
     private void checkThread(final int id) {
         if (!holders[id].isCreated) {
-            // Logger.d(TAG, "Creating thread " + holders[id].name);
             holders[id].isCreated = true;
             getThreadDispatcher().postAction(new Runnable() {
                 @Override
                 public void run() {
                     holders[id].actorThread = new ActorDispatcher(holders[id].threadPriority, holders[id].queue);
-                    // Logger.d(TAG, "Thread " + holders[id].name + " created");
                 }
             });
         }
@@ -68,7 +68,9 @@ public class ActorSystem {
                 return i;
             }
         }
-        return -1;
+        // Automatically add thread
+        addThread(name);
+        return getThreadId(name);
     }
 
     public void sendMessage(final int threadId, ActorMessage message) {
@@ -81,7 +83,7 @@ public class ActorSystem {
         }
         // Logger.d(TAG, "Sending message " + message.getMessage() + " to " + message.getActor().getName());
         ActorMessageDesc desc = message.getActor().findDesc(message.getMessage());
-        if (desc.isSingleShot()) {
+        if (desc != null && desc.isSingleShot()) {
             holders[threadId].queue.postToQueueUniq(message, ActorTime.currentTime() + delay);
         } else {
             holders[threadId].queue.putToQueue(message, ActorTime.currentTime() + delay);
@@ -94,9 +96,6 @@ public class ActorSystem {
             return;
         }
         holders[threadId].queue.removeMessage(messageFilter);
-    }
-
-    public void onUnhandledMessage(Actor actor, String name, Object[] args, ActorReference reference) {
     }
 
     public void close() {
